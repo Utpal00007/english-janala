@@ -15,7 +15,7 @@ const manageSpinner = (status) => {
 
 const loadLessons = () => {
   fetch("https://openapi.programming-hero.com/api/levels/all").then((res) =>
-    res.json().then((json) => displayLesson(json.data))
+    res.json().then((json) => displayLesson(json.data)),
   );
 };
 
@@ -103,8 +103,8 @@ const displayLevelWord = (words) => {
         <div class="text-2xl font-medium font-bangla">"${
           word.meaning ? word.meaning : "Meaning Not Found"
         } / ${
-      word.pronunciation ? word.pronunciation : "Pronunciation Not Found"
-    }"</div>
+          word.pronunciation ? word.pronunciation : "Pronunciation Not Found"
+        }"</div>
         <div class="flex justify-between items-center mt-5">
           <button  onclick=" loadWordDetail(${
             word.id
@@ -140,3 +140,20 @@ const displayLesson = (lessons) => {
 };
 
 loadLessons();
+
+document.getElementById("btn-search").addEventListener("click", () => {
+  removeActive();
+  const input = document.getElementById("input-search");
+  const searchValue = input.value.trim().toLowerCase();
+  console.log(searchValue);
+
+  fetch("https://openapi.programming-hero.com/api/words/all")
+    .then((res) => res.json())
+    .then((data) => {
+      const allWords = data.data;
+      const filterWords = allWords.filter((word) =>
+        word.word.toLowerCase().includes(searchValue),
+      );
+      displayLevelWord(filterWords);
+    });
+});
